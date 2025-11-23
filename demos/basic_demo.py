@@ -3,6 +3,11 @@ Demo: Pose Estimation Pipeline
 This demo shows how to use the pose estimation pipeline
 """
 
+import sys
+import os
+# Add local easy_ViTPose to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "easy_ViTPose"))
+
 import cv2
 import numpy as np
 import time

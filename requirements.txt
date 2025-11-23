@@ -21,5 +21,5 @@ seaborn>=0.12.0
 pandas>=2.0.0
 pyyaml>=6.0
 
-# Easy ViTPose (install from GitHub)
-git+https://github.com/JunkyByte/easy_ViTPose.git
+# NOTE: easy_ViTPose is included as source code in this repository
+# No need to install separately
