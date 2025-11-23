@@ -101,3 +101,18 @@ This project is licensed under the MIT License.
 This project is licensed under the MIT License.
 
 **Note**: The `easy_ViTPose/` directory contains code from [JunkyByte/easy_ViTPose](https://github.com/JunkyByte/easy_ViTPose) which is also MIT licensed.
+
+## 🔧 Model Download
+
+The ViTPose-B model will be automatically downloaded when you run the demo:
+
+```bash
+python demos/basic_demo.py
+```
+
+The model is hosted on GitHub Releases and will be downloaded to the `models/` directory.
+
+### Manual Download
+If automatic download fails, you can manually:
+1. Download from [GitHub Releases](https://github.com/pradeepj247/easy-pose-pipeline/releases)
+2. Place the model in `models/vitpose-b.pth`

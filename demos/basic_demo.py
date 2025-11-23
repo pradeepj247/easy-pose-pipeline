@@ -8,6 +8,17 @@ import os
 # Add local easy_ViTPose to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "easy_ViTPose"))
 
+# Auto-download model if missing
+try:
+    from download_model import download_vitpose_b
+    print("🔍 Checking for ViTPose-B model...")
+    if not download_vitpose_b():
+        print("❌ Model download failed. Please download manually.")
+        sys.exit(1)
+except ImportError as e:
+    print(f"⚠️ Download helper not available: {e}")
+    print("💡 Make sure download_model.py is in the project root")
+
 import cv2
 import numpy as np
 import time
@@ -105,3 +116,4 @@ def run_demo():
 
 if __name__ == "__main__":
     run_demo()
+
