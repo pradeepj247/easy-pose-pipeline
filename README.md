@@ -95,3 +95,9 @@ This project is licensed under the MIT License.
 - [Ultralytics YOLOv8](https://github.com/ultralytics/ultralytics)
 - [Easy-ViTPose](https://github.com/JunkyByte/easy_ViTPose)
 - [ViTPose](https://github.com/ViTAE-3D/ViTPose)
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+**Note**: The `easy_ViTPose/` directory contains code from [JunkyByte/easy_ViTPose](https://github.com/JunkyByte/easy_ViTPose) which is also MIT licensed.
