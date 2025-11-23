@@ -1,0 +1,7 @@
+# Ignore large model files - these are for manual upload to GitHub Releases
+*.pth
+*.pt
+*.onnx
+*.engine
+*.bin
+*.safetensors
