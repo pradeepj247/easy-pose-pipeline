@@ -10,7 +10,6 @@ import torch
 from ultralytics import YOLO
 
 from .configs.ViTPose_common import data_cfg
-from .sort import Sort
 from .vit_models.model import ViTPose
 from .vit_utils.inference import draw_bboxes, pad_image
 from .vit_utils.top_down_eval import keypoints_from_heatmaps
@@ -50,7 +49,7 @@ DETC_TO_YOLO_YOLOC = {
 
 class VitInference:
     """
-    Class for performing inference using ViTPose models with YOLOv8 human detection and SORT tracking.
+    Class for performing inference using ViTPose models with YOLOv8 human detection.
 
     Args:
         model (str): Path to the ViT model file (.pth, .onnx, .engine).
@@ -73,8 +72,7 @@ class VitInference:
                                       In this case the SORT tracker is not used (increasing performance)
                                       but people id tracking
                                       won't be consistent among frames.
-        yolo_step (int, optional): The tracker can be used to predict the bboxes instead of yolo for performance,
-                                   this flag specifies how often yolo is applied (e.g. 1 applies yolo every frame).
+        yolo_step (int, optional): This flag specifies how often yolo is applied (e.g. 1 applies yolo every frame).
                                    This does not have any effect when is_video is False.
     """
 
@@ -174,14 +172,8 @@ class VitInference:
     def reset(self):
         """
         Reset the inference class to be ready for a new video.
-        This will reset the internal counter of frames, on videos
-        this is necessary to reset the tracker.
+        This will reset the internal counter of frames.
         """
-        min_hits = 3 if self.yolo_step == 1 else 1
-        use_tracker = self.is_video and not self.single_pose
-        self.tracker = Sort(max_age=self.yolo_step,
-                            min_hits=min_hits,
-                            iou_threshold=0.3) if use_tracker else None  # TODO: Params
         self.frame_counter = 0
 
     @classmethod
@@ -230,31 +222,23 @@ class VitInference:
         """
 
         # First use YOLOv8 for detection
-        res_pd = np.empty((0, 5))
-        results = None
-        if (self.tracker is None or
-           (self.frame_counter % self.yolo_step == 0 or self.frame_counter < 3)):
-            results = self.yolo(img[..., ::-1], verbose=False, imgsz=self.yolo_size,
-                                device=self.device if self.device != 'cuda' else 0,
-                                classes=self.yolo_classes)[0]
-            res_pd = np.array([r[:5].tolist() for r in  # TODO: Confidence threshold
-                               results.boxes.data.cpu().numpy() if r[4] > 0.35]).reshape((-1, 5))
+        results = self.yolo(img[..., ::-1], verbose=False, imgsz=self.yolo_size,
+                            device=self.device if self.device != 'cuda' else 0,
+                            classes=self.yolo_classes)[0]
+        
+        res_pd = np.array([r[:5].tolist() for r in
+                           results.boxes.data.cpu().numpy() if r[4] > 0.35]).reshape((-1, 5))
         self.frame_counter += 1
 
         frame_keypoints = {}
         scores_bbox = {}
-        ids = None
-        if self.tracker is not None:
-            res_pd = self.tracker.update(res_pd)
-            ids = res_pd[:, 5].astype(int).tolist()
-
+        
         # Prepare boxes for inference
         bboxes = res_pd[:, :4].round().astype(int)
         scores = res_pd[:, 4].tolist()
         pad_bbox = 10
 
-        if ids is None:
-            ids = range(len(bboxes))
+        ids = range(len(bboxes))
 
         for bbox, id, score in zip(bboxes, ids, scores):
             # TODO: Slightly bigger bbox

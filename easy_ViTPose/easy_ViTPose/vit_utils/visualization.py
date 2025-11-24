@@ -2,7 +2,12 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 import torchvision
-import ffmpeg
+try:
+    import ffmpeg
+    FFMPEG_AVAILABLE = True
+except ImportError:
+    FFMPEG_AVAILABLE = False
+    print("⚠️ ffmpeg-python not available, video probing functionality will be disabled")
 
 
 __all__ = ["joints_dict", "draw_points_and_skeleton"]
@@ -562,6 +567,8 @@ def check_video_rotation(filename):
     # https://stackoverflow.com/questions/53097092/frame-from-video-is-upside-down-after-extracting/55747773#55747773
 
     # this returns meta-data of the video file in form of a dictionary
+    if not FFMPEG_AVAILABLE:
+        raise ImportError("ffmpeg video probing not available in this build")
     meta_dict = ffmpeg.probe(filename)
 
     # from the dictionary, meta_dict['streams'][0]['tags']['rotate'] is the key
