@@ -2,15 +2,16 @@
 demos/outputs/*
 stage1_bboxes.json
 stage2_frame_*_output.jpg
+stage2_video_output.mp4
 *.jpg
 *.png
+*.mp4
 
-
-# Model files (should be downloaded separately)
-models/*.pth
-models/*.pt
-models/*.onnx
-models/*.engine
+# Model files (should be downloaded separately) - ALL locations
+**/models/*.pth
+**/models/*.pt
+**/models/*.onnx
+**/models/*.engine
 !models/.gitkeep
 
 # Python cache

@@ -57,18 +57,8 @@ easy_pose_pipeline/
 ├── demos/                 # Demo scripts
 │   ├── demo_stage1.py          # Stage 1: YOLOv8 detection
 │   ├── demo_stage2_image_test.py  # Stage 2: ViTPose pose estimation (single image test)
+│   ├── demo_stage2_video.py      # Stage 2: ViTPose video processing
 │   └── outputs/            # Output directory for results
-├── data/                 # Data directory
-│   ├── input/           # Input videos/images
-│   └── output/          # Processed outputs
-├── models/              # Model weights
-├── src/                 # Source code
-├── utils/               # Utility functions
-├── configs/             # Configuration files
-├── requirements.txt     # Python dependencies
-└── verify_installation.py  # Installation checker
-```
-
 ## 🔧 Model Setup
 **Note**: There are two models directories in the project:
 - `models/` (root) - Contains our working models (`vitpose-b.pth`, `yolov8s.pt`)
@@ -96,6 +86,17 @@ python demos/demo_stage1.py
 # Stage 2: Run pose estimation on specific frame
 python demos/demo_stage2_image_test.py --frame_number 254
 ```
+
+**Stage 2 - Video Processing**:
+```bash
+# Process 100 frames starting from frame 0
+python demos/demo_stage2_video.py --frames=100 --start_frame=0
+
+# Process 200 frames starting from frame 50  
+python demos/demo_stage2_video.py --frames=200 --start_frame=50
+```
+Processes multiple frames and generates output video with pose estimation on the largest person per frame.
+
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit issues and pull requests.
