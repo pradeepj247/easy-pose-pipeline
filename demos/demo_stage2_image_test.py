@@ -20,7 +20,7 @@ def stage2_pose_estimation(frame_number=None):
     print("=" * 40)
     
     # Load bboxes from Stage 1
-    bboxes_path = "stage1_bboxes.json"
+    bboxes_path = os.path.join(os.path.dirname(__file__), "outputs", "stage1_bboxes.json")
     if not os.path.exists(bboxes_path):
         print(f"❌ Bboxes file not found: {bboxes_path}")
         print("💡 Please run Stage 1 first to generate bboxes")
@@ -54,7 +54,7 @@ def stage2_pose_estimation(frame_number=None):
     print(f"📸 Processing frame {frame_number}")
     
     # Load the specific frame
-    video_path = "data/input/campus_walk.mp4"
+    video_path = os.path.join(os.path.dirname(__file__), "..", "data", "input", "campus_walk.mp4")
     cap = cv2.VideoCapture(video_path)
     cap.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
     ret, frame = cap.read()
@@ -105,7 +105,7 @@ def stage2_pose_estimation(frame_number=None):
                     cv2.circle(vis_frame, (int(x), int(y)), 4, (0, 0, 255), -1)
     
     # Save output image
-    output_image = f"stage2_frame_{frame_number}_output.jpg"
+    output_image = os.path.join(os.path.dirname(__file__), "outputs", f"stage2_frame_{frame_number}_output.jpg")
     cv2.imwrite(output_image, vis_frame)
     
     # Display results

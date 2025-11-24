@@ -55,8 +55,9 @@ Uses pre-computed bounding boxes to run ViTPose pose estimation on a random fram
 ```
 easy_pose_pipeline/
 ├── demos/                 # Demo scripts
-│   ├── demo_stage1.py    # Stage 1: YOLOv8 detection
-│   └── demo_stage2.py    # Stage 2: ViTPose pose estimation
+│   ├── demo_stage1.py          # Stage 1: YOLOv8 detection
+│   ├── demo_stage2_image_test.py  # Stage 2: ViTPose pose estimation (single image test)
+│   └── outputs/            # Output directory for results
 ├── data/                 # Data directory
 │   ├── input/           # Input videos/images
 │   └── output/          # Processed outputs
@@ -93,7 +94,7 @@ Download the required model weights:
 python demos/demo_stage1.py
 
 # Stage 2: Run pose estimation on specific frame
-python demos/demo_stage2.py --frame_number 254
+python demos/demo_stage2_image_test.py --frame_number 254
 ```
 
 ## 🤝 Contributing

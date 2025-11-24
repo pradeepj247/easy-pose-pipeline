@@ -1,4 +1,5 @@
 # Output files
+demos/outputs/*
 stage1_bboxes.json
 stage2_frame_*_output.jpg
 *.jpg

@@ -19,7 +19,7 @@ def stage1_detection():
     yolo_model = YOLO("models/yolov8s.pt")
     
     # Open video
-    video_path = "data/input/campus_walk.mp4"
+    video_path = os.path.join(os.path.dirname(__file__), "..", "data", "input", "campus_walk.mp4")
     cap = cv2.VideoCapture(video_path)
     
     if not cap.isOpened():
@@ -93,7 +93,7 @@ def stage1_detection():
     total_time = time.time() - start_time
     
     # Save bboxes to JSON
-    output_path = "stage1_bboxes.json"
+    output_path = os.path.join(os.path.dirname(__file__), "outputs", "stage1_bboxes.json")
     with open(output_path, 'w') as f:
         json.dump(bboxes_data, f, indent=2)
     
