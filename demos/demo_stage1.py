@@ -18,6 +18,14 @@ def stage1_detection():
     # Initialize YOLO model
     yolo_model = YOLO("models/yolov8s.pt")
     
+    # Warm-up run to load model and initialize GPU
+    print("🔥 Warming up YOLO model...")
+    warm_up_start = time.time()
+    dummy_image = np.random.randint(0, 255, (640, 640, 3), dtype=np.uint8)
+    _ = yolo_model(dummy_image, verbose=False)
+    warm_up_time = time.time() - warm_up_start
+    print(f"✅ YOLO warm-up completed in {warm_up_time:.2f}s")
+    
     # Open video
     video_path = os.path.join(os.path.dirname(__file__), "..", "data", "input", "campus_walk.mp4")
     cap = cv2.VideoCapture(video_path)

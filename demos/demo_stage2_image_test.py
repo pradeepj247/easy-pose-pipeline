@@ -42,6 +42,15 @@ def stage2_pose_estimation(frame_number=None):
     model_load_time = time.time() - vitpose_start
     print(f"✅ ViTPose model loaded in {model_load_time:.2f}s")
     
+    # Warm-up run to initialize GPU and cache
+    print("🔥 Warming up ViTPose model...")
+    warm_up_start = time.time()
+    dummy_image = np.random.randint(0, 255, (256, 192, 3), dtype=np.uint8)
+    dummy_bbox = [0, 0, 192, 256]
+    _ = vitpose_model.inference_bbox(dummy_image, dummy_bbox)
+    warm_up_time = time.time() - warm_up_start
+    print(f"✅ ViTPose warm-up completed in {warm_up_time:.2f}s")
+    
     # Select frame if not provided
     if frame_number is None:
         available_frames = [int(f) for f in bboxes_data.keys() if bboxes_data[f]]
