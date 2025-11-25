@@ -88,6 +88,7 @@ def stage2_video_processing(num_frames=100, start_frame=0):
     frame_times = []
     frame_count = 0
     processed_count = 0
+    keypoints_data = {}  # Store keypoints for each frame
     
     print("\n🔍 Processing frames...")
     start_time = time.time()
@@ -103,6 +104,7 @@ def stage2_video_processing(num_frames=100, start_frame=0):
         frame_bboxes = bboxes_data.get(str(current_frame), [])
         
         vis_frame = frame.copy()
+        frame_keypoints = []
         
         if frame_bboxes:
             # Get the largest bbox (by area)
@@ -121,6 +123,16 @@ def stage2_video_processing(num_frames=100, start_frame=0):
             inference_time = time.time() - inference_start
             frame_times.append(inference_time)
             
+            # Store keypoints data
+            if keypoints.size > 0:
+                for kp in keypoints:
+                    y_coord, x_coord, conf = kp
+                    frame_keypoints.append({
+                        "x": float(x_coord),
+                        "y": float(y_coord), 
+                        "confidence": float(conf)
+                    })
+            
             # Draw keypoints
             if keypoints.size > 0:
                 for kp in keypoints:
@@ -129,6 +141,9 @@ def stage2_video_processing(num_frames=100, start_frame=0):
                         cv2.circle(vis_frame, (int(x), int(y)), 4, (0, 0, 255), -1)
             
             processed_count += 1
+        
+        # Store keypoints for this frame
+        keypoints_data[str(current_frame)] = frame_keypoints
         
         # Write frame to output video
         out.write(vis_frame)
@@ -144,6 +159,11 @@ def stage2_video_processing(num_frames=100, start_frame=0):
     cap.release()
     out.release()
     
+    # Save keypoints to JSON file
+    keypoints_output_path = os.path.join(os.path.dirname(__file__), "outputs", "stage2_2dkps.json")
+    with open(keypoints_output_path, 'w') as f:
+        json.dump(keypoints_data, f, indent=2)
+    
     total_time = time.time() - start_time
     
     # Performance summary
@@ -157,6 +177,7 @@ def stage2_video_processing(num_frames=100, start_frame=0):
         print(f"   • Average time per frame: {np.mean(frame_times)*1000:.1f}ms")
         print(f"   • Average FPS: {1.0/np.mean(frame_times):.1f}")
     print(f"   • Output video: {output_video_path}")
+    print(f"   • 2D Keypoints JSON: {keypoints_output_path}")
 
 if __name__ == "__main__":
     print("🎯 Easy Pose Pipeline - Stage 2 Video Processing")

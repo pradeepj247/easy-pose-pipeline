@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 Download ViTPose-B model:
 ```bash
-wget -O models/vitpose-b.pth https://github.com/pradeepj247/easy-pose-pipeline/releases/download/v1.0/vitpose-b.pth
+python download_model.py
 ```
 
 Additional packages for Google Colab:
@@ -41,78 +41,69 @@ python verify_installation.py
 
 **Stage 1 - Person Detection**:
 ```bash
-python demos/demo_stage1.py
+python demos/stage1_yolo_test.py
 ```
 Processes video frames with YOLOv8 and exports bounding boxes to JSON.
 
 **Stage 2 - Pose Estimation**:
 ```bash
-python demos/demo_stage2.py
+# Single image test
+python demos/stage2_image_test.py --frame_number 254
+
+# Video processing
+python demos/stage2_video_test.py --frames=100 --start_frame=0
 ```
-Uses pre-computed bounding boxes to run ViTPose pose estimation on a random frame.
+Uses pre-computed bounding boxes to run ViTPose pose estimation.
 
 ## 📁 Project Structure
 ```
 easy_pose_pipeline/
 ├── demos/                 # Demo scripts
-│   ├── demo_stage1.py          # Stage 1: YOLOv8 detection
-│   ├── demo_stage2_image_test.py  # Stage 2: ViTPose pose estimation (single image test)
-│   ├── demo_stage2_video.py      # Stage 2: ViTPose video processing
+│   ├── stage1_yolo_test.py     # Stage 1: YOLOv8 detection
+│   ├── stage2_image_test.py    # Stage 2: ViTPose pose estimation (single image test)
+│   ├── stage2_video_test.py    # Stage 2: ViTPose video processing
 │   └── outputs/            # Output directory for results
+├── models/                # Model weights directory
+├── data/                  # Input data directory
+├── easy_ViTPose/          # ViTPose implementation
+└── utils/                 # Utility functions
+```
+
 ## 🔧 Model Setup
 **Note**: There are two models directories in the project:
 - `models/` (root) - Contains our working models (`vitpose-b.pth`, `yolov8s.pt`)
 - `easy_ViTPose/models/` - Contains original easy_ViTPose download scripts (not used in our pipeline)
 
-
-
 Download the required model weights:
 - **YOLOv8s**: Automatically downloaded by ultralytics
-- **ViTPose-B**: Download from GitHub releases and place in `models/vitpose-b.pth`
-
-## 📊 Performance
-- **YOLOv8s detection**: ~8-12ms per frame
-- **ViTPose-B inference**: ~100ms per person
-- **Total pipeline**: Efficient two-stage processing
-- **Estimated FPS**: 80-110 FPS for detection, ~10 FPS for pose estimation
+- **ViTPose-B**: Use `python download_model.py` to download from GitHub releases
 
 ## 🎮 Usage Examples
 
 ### Basic Two-Stage Pipeline
-```python
+```bash
 # Stage 1: Run detection on all frames
-python demos/demo_stage1.py
+python demos/stage1_yolo_test.py
 
 # Stage 2: Run pose estimation on specific frame
-python demos/demo_stage2_image_test.py --frame_number 254
+python demos/stage2_image_test.py --frame_number 254
+
+# Stage 2: Process multiple video frames
+python demos/stage2_video_test.py --frames=100 --start_frame=0
 ```
 
-**Stage 2 - Video Processing**:
-```bash
-# Process 100 frames starting from frame 0
-python demos/demo_stage2_video.py --frames=100 --start_frame=0
+### Output Files
+- `stage1_bboxes.json`: Bounding boxes from Stage 1
+- `stage2_2dkps.json`: 2D keypoints with confidence scores from Stage 2
+- `stage2_video_output.mp4`: Video with pose estimation overlay
 
-# Process 200 frames starting from frame 50  
-python demos/demo_stage2_video.py --frames=200 --start_frame=50
-```
-Processes multiple frames and generates output video with pose estimation on the largest person per frame.
-
+## 📊 Performance
+- **YOLOv8 Detection**: 80-110 FPS
+- **ViTPose Estimation**: ~10 FPS
+- **Hardware**: Tested on NVIDIA T4 GPU (Google Colab)
 
 ## 🤝 Contributing
 Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ## 📄 License
 This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-- Ultralytics YOLOv8
-- Easy-ViTPose
-- ViTPose
-
-## 🔧 Model Download
-The ViTPose-B model is hosted on GitHub Releases and will be downloaded to the `models/` directory.
-
-### Manual Download
-If automatic download fails, you can manually:
-- Download from [GitHub Releases](https://github.com/pradeepj247/easy-pose-pipeline/releases/download/v1.0/vitpose-b.pth)
-- Place the model in `models/vitpose-b.pth`

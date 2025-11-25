@@ -1,6 +1,7 @@
 # Output files
 demos/outputs/*
-stage1_bboxes.json
+!demos/outputs/stage1_bboxes.json
+!demos/outputs/stage2_2dkps.json
 stage2_frame_*_output.jpg
 stage2_video_output.mp4
 *.jpg
